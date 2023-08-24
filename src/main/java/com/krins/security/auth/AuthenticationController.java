@@ -17,11 +17,16 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
+
+        //saves the user in the database and returns a JST token
+        //note: the input validation is not done
         return ResponseEntity.ok(service.register(request));
     }
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
+
+        //find the user and generates a JWT token
         return ResponseEntity.ok(service.authenticate(request));
     }
 

@@ -22,6 +22,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     
     public AuthenticationResponse register(RegisterRequest request) {
+        //creates a user using the body
         var user = User.builder()
             .firstname(request.getFirstname())
             .lastname(request.getLastname())
@@ -30,8 +31,13 @@ public class AuthenticationService {
             .role(Role.USER)
             .build();
 
+        //saves the user to the database
         userRepository.save(user);
+
+        //generates a token for the user
         var jwtToken = jwtService.generateToken(user);
+
+        //creates a response object and returns it
         return AuthenticationResponse.builder()
             .token(jwtToken)
             .build();
@@ -41,12 +47,18 @@ public class AuthenticationService {
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
+
+        //find the user by the email, throws id does not exist
         var user = userRepository.findByEmail(request.getEmail())
             .orElseThrow();
+
+        //generates a token for the user
         var jwtToken = jwtService.generateToken(user);
-                return AuthenticationResponse.builder()
-                    .token(jwtToken)
-                    .build();
+
+        //creates a response object and returns it
+        return AuthenticationResponse.builder()
+            .token(jwtToken)
+            .build();
     }
 
 }
